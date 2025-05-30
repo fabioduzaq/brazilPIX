@@ -1,0 +1,148 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Transferência Pix</h3>
+            </div>
+            <div class="panel-body">
+                <form name="pixForm" ng-submit="submitForm()" novalidate>
+                    <!-- Valor em Reais -->
+                    <div class="form-group" ng-class="{'has-error': pixForm.valorReal.$invalid && pixForm.valorReal.$dirty}">
+                        <label for="valorReal">Valor em Reais (R$)</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">R$</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="valorReal" 
+                                   name="valorReal" 
+                                   ng-model="formData.valorReal"
+                                   ng-change="calcularConversoes()"
+                                   min="0.10"
+                                   max="0.59"
+                                   step="0.01"
+                                   required>
+                        </div>
+                        <span class="help-block" ng-show="pixForm.valorReal.$error.min">
+                            Valor mínimo: R$ 0,10
+                        </span>
+                    </div>
+
+
+                    <!-- Tipo de Chave -->
+                    <div class="form-group">
+                        <label for="tipoChave">Tipo de Chave Pix</label>
+                        <select class="form-control" 
+                                id="tipoChave" 
+                                name="tipoChave" 
+                                ng-model="formData.tipoChave"
+                                ng-change="onTipoChaveChange()"
+                                required>
+                            <option ng-repeat="tipo in tiposChave" value="{{tipo.id}}">
+                                {{tipo.nome}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Chave Pix -->
+                    <div class="form-group" ng-class="{'has-error': pixForm.chave.$invalid && pixForm.chave.$dirty}">
+                        <label for="chave">Chave Pix do Destinatário</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="chave" 
+                               name="chave" 
+                               ng-model="formData.chave"
+                               ng-change="formatarChave()"
+                               placeholder="{{placeholder}}"
+                               required>
+                        <span class="help-block" ng-show="pixForm.chave.$invalid && pixForm.chave.$dirty">
+                            Chave Pix é obrigatória
+                        </span>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="form-group">
+                        <label for="descricao">Descrição (opcional)</label>
+                        <textarea class="form-control" 
+                                 id="descricao" 
+                                 name="descricao" 
+                                 ng-model="formData.descricao"
+                                 rows="2"
+                                 maxlength="140"
+                                 placeholder="Descrição do servico ou produto"></textarea>
+                    </div>
+
+                    <!-- Conversões -->
+                    <div class="conversoes-container bg-light p-3 mb-4">
+                        <h4 class="mb-3">Conversão + Taxa (2%)</h4>
+                        
+                        <!-- Real -->
+                        <div class="conversion-item mb-2">
+                            <span class="flag-emoji">🇧🇷</span>
+                            <strong>Real (BRL):</strong>
+                            <span class="float-end">
+                                R$ {{formData.valorReal | number:2}}
+                                <small class="text-muted">
+                                    (Taxa: R$ {{formData.taxaReal | number:2}})
+                                </small>
+                            </span>
+                        </div>
+
+                        <!-- Dólar -->
+                        <div class="conversion-item mb-2">
+                            <span class="flag-emoji">🇺🇸</span>
+                            <strong>Dólar (USD):</strong>
+                            <span class="float-end">
+                                US$ {{formData.valorDolar | number:2}}
+                                <small class="text-muted">
+                                    (Taxa: US$ {{formData.taxaDolar | number:2}})
+                                </small>
+                            </span>
+                        </div>
+
+                        <!-- Euro -->
+                        <div class="conversion-item mb-2">
+                            <span class="flag-emoji">🇪🇺</span>
+                            <strong>Euro (EUR):</strong>
+                            <span class="float-end">
+                                € {{formData.valorEuro | number:2}}
+                                <small class="text-muted">
+                                    (Taxa: € {{formData.taxaEuro | number:2}})
+                                </small>
+                            </span>
+                        </div>
+
+                        <!-- Peso Mexicano -->
+                        <div class="conversion-item">
+                            <span class="flag-emoji">🇲🇽</span>
+                            <strong>Peso (MXN):</strong>
+                            <span class="float-end">
+                                MXN {{formData.valorPesoMx | number:2}}
+                                <small class="text-muted">
+                                    (Taxa: MXN {{formData.taxaPesoMx | number:2}})
+                                </small>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <!-- Loading e Erro -->
+                    <div class="alert alert-info" ng-if="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Processando...
+                    </div>
+
+                    <div class="alert alert-danger" ng-if="error">
+                        <i class="fas fa-exclamation-circle"></i> {{error}}
+                    </div>
+
+                    <!-- Botão de Submit -->
+                    <button type="submit" 
+                            class="btn btn-primary btn-block btn-lg"
+                            ng-disabled="pixForm.$invalid || loading">
+                        
+                        Continuar  
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

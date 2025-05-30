@@ -1,0 +1,692 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Status da Transferência</h3>
+            </div>
+            <div class="panel-body text-center">
+                <!-- Loading Inicial -->
+                <div ng-if="isLoading" class="initial-loading">
+                    <div class="loading-content">
+                        <div class="loading-spinner">
+                            <div class="spinner-border"></div>
+                        </div>
+                        <p class="loading-text">Consultando status da transferência...</p>
+                    </div>
+                </div>
+
+                <!-- Conteúdo Principal (só exibe após carregar) -->
+                <div ng-if="!isLoading">
+                    <!-- Loading Animation -->
+                    <div class="loading-container" ng-if="status === 'PENDING' || status === 'BANK_PROCESSING'">
+                        <div class="loading-steps">
+                            <div class="step" ng-class="{'active': status === 'PENDING', 'completed': status === 'BANK_PROCESSING'}">
+                                <div class="step-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step-label">Iniciando</div>
+                            </div>
+                            <div class="step" ng-class="{'active': status === 'BANK_PROCESSING', 'pending': status === 'PENDING'}">
+                                <div class="step-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step-label">Processando</div>
+                            </div>
+                            <div class="step pending">
+                                <div class="step-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="step-label">Concluído</div>
+                            </div>
+                        </div>
+                        <div class="loading-pulse"></div>
+
+                        <!-- Alerta de Transferência Pendente -->
+                        <div class="alert alert-info pending-alert" role="alert">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Transferência em Andamento:</strong> 
+                            Por favor, aguarde o processamento completo para obter o comprovante da transferência Pix para a chave: {{transferData.bankAccount.pixAddressKey}} 
+                        </div>
+
+                    </div>
+
+                    <!-- Success/Error/Cancel States -->
+                    <div ng-if="status !== 'PENDING' && status !== 'BANK_PROCESSING'">
+                        <!-- Ícone de Status -->
+                        <div class="status-icon mb-4" ng-class="getClasseStatus(status)">
+                            <i class="fas fa-3x"
+                               ng-class="{
+                                   'fa-check-circle': status === 'DONE',
+                                   'fa-times-circle': status === 'FAILED',
+                                   'fa-ban': status === 'CANCELLED'
+                               }">
+                            </i>
+                        </div>
+
+                        <!-- Mensagem de Status -->
+                        <h4 ng-class="getClasseStatus(status)">
+                            {{getTextoStatus(status)}}
+                        </h4>
+
+                        <!-- Detalhes da Transação -->
+                        <div class="transaction-details mt-4" ng-if="status === 'DONE' && transferData">
+                            <div class="success-animation">
+                                <div class="checkmark">
+                                    <div class="checkmark-circle"></div>
+                                    <div class="checkmark-stem"></div>
+                                    <div class="checkmark-kick"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Debug Info -->
+                            <pre ng-if="false">{{transferData | json}}</pre>
+                            
+                            <!-- Informações da Transferência -->
+                            <div class="transfer-info">
+                                <!-- Informações do Pix -->
+                                <div class="pix-info">
+                                    <h5>Dados do Pix</h5>
+                                    
+                                    <div class="info-row">
+                                        <span class="info-label">Chave Pix:</span>
+                                        <span class="info-value pix-key">{{transferData.bankAccount.pixAddressKey}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <!-- Valores -->
+                                <div class="info-row">
+                                    <span class="info-label">Valor:</span>
+                                    <span class="info-value">R$ {{transferData.value | number:2}}</span>
+                                </div>
+                                <div class="info-row" ng-if="transferData.transferFee > 0">
+                                    <span class="info-label">Taxa:</span>
+                                    <span class="info-value">R$ {{transferData.transferFee | number:2}}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Valor Total:</span>
+                                    <span class="info-value total-value">R$ {{transferData.netValue | number:2}}</span>
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <!-- Data e Identificador -->
+                                <div class="info-row">
+                                    <span class="info-label">Data:</span>
+                                    <span class="info-value">{{transferData.effectiveDate | date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Identificador:</span>
+                                    <span class="info-value id-code">{{transferData.endToEndIdentifier}}</span>
+                                </div>
+                                <div class="info-row" ng-if="transferData.description">
+                                    <span class="info-label">Descrição:</span>
+                                    <span class="info-value">{{transferData.description}}</span>
+                                </div>
+                                
+                                <!-- Dados do Destinatário -->
+                                <div class="recipient-info" ng-if="transferData.bankAccount">
+                                    <h5>Dados do Destinatário</h5>
+                                    <div class="info-row">
+                                        <span class="info-label">Nome:</span>
+                                        <span class="info-value">{{transferData.bankAccount.ownerName}}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">CPF/CNPJ:</span>
+                                        <span class="info-value">{{transferData.bankAccount.cpfCnpj}}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Banco:</span>
+                                        <span class="info-value">
+                                            <i class="fas fa-university"></i>
+                                            {{transferData.bankAccount.bank.name}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Botão do Comprovante -->
+                                <div class="receipt-button mt-4" ng-if="transferData.transactionReceiptUrl">
+                                    <a href="{{transferData.transactionReceiptUrl}}" 
+                                       target="_blank" 
+                                       class="btn btn-default">
+                                        <i class="fas fa-file-download"></i>
+                                        Baixar Comprovante
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mensagem de Erro -->
+                        <div class="transaction-details mt-4" ng-if="status === 'FAILED'">
+                            <div class="error-animation">
+                                <div class="error-icon">✕</div>
+                            </div>
+                            <p class="text-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Não foi possível processar sua transferência.
+                            </p>
+                            <p class="text-muted" ng-if="transferData.failReason">
+                                Motivo: {{transferData.failReason}}
+                            </p>
+                            <p class="text-muted">
+                                Por favor, entre em contato com nosso suporte.
+                            </p>
+                        </div>
+
+                        <!-- Mensagem de Cancelamento -->
+                        <div class="transaction-details mt-4" ng-if="status === 'CANCELLED'">
+                            <div class="cancel-animation">
+                                <div class="cancel-icon"></div>
+                            </div>
+                            <p class="text-danger">
+                                <i class="fas fa-ban"></i>
+                                A transferência foi cancelada.
+                            </p>
+                            <p class="text-muted">
+                                Se você não solicitou o cancelamento, entre em contato com nosso suporte.
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Botão de Voltar -->
+                    <div class="mt-4" ng-if="status !== 'PENDING' && status !== 'BANK_PROCESSING'">
+                        <button class="btn btn-primary" ng-click="voltarInicio()">
+                            <i class="fas fa-home"></i> Fazer outra transferencia Pix
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos específicos para a tela de status -->
+<style>
+/* Loading Inicial */
+.initial-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    width: 100%;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-spinner {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border: 0.25em solid #007bff;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+}
+
+.loading-text {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+    text-align: center;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
+
+/* Loading Steps */
+.loading-container {
+    padding: 20px 0;
+}
+
+.loading-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 400px;
+    margin: 0 auto 30px;
+    position: relative;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.step-line {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background-color: #dee2e6;
+    z-index: 0;
+}
+
+.step:last-child .step-line {
+    display: none;
+}
+
+.step-label {
+    font-size: 12px;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Step States */
+.step.active .step-icon {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+.step.completed .step-icon {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.step.completed .step-line {
+    background-color: #28a745;
+}
+
+.step.pending .step-icon {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+/* Loading Pulse */
+.loading-pulse {
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(to right, #007bff 0%, #28a745 50%, #007bff 100%);
+    margin: 20px auto;
+    position: relative;
+    animation: pulse-line 2s infinite;
+    border-radius: 2px;
+}
+
+/* Success Animation */
+.success-animation {
+    margin: 20px auto;
+}
+
+.checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #28a745;
+    stroke-miterlimit: 10;
+    margin: 10% auto;
+    box-shadow: inset 0px 0px 0px #28a745;
+    animation: fill-checkmark .4s ease-in-out .4s forwards, scale-checkmark .3s ease-in-out .9s both;
+}
+
+.checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #28a745;
+    fill: none;
+    animation: stroke-checkmark .6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-stem {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke-checkmark .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards;
+}
+
+.checkmark-kick {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke-checkmark .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards;
+}
+
+/* Error Animation */
+.error-animation {
+    margin: 20px auto;
+}
+
+.error-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 40px;
+    color: #dc3545;
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Cancel Animation */
+.cancel-animation {
+    margin: 20px auto;
+}
+
+.cancel-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #dc3545;
+    position: relative;
+    margin: 0 auto;
+    animation: rotate-cancel 0.5s ease-in-out;
+}
+
+.cancel-icon:before,
+.cancel-icon:after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 2px;
+    background-color: #dc3545;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cancel-icon:after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+}
+
+@keyframes pulse-line {
+    0% {
+        background-position: -100px 0;
+    }
+    100% {
+        background-position: 100px 0;
+    }
+}
+
+@keyframes fill-checkmark {
+    100% {
+        box-shadow: inset 0px 0px 0px 30px #28a745;
+    }
+}
+
+@keyframes scale-checkmark {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes stroke-checkmark {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+@keyframes rotate-cancel {
+    0% { transform: scale(0) rotate(180deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* General Styles */
+.status-icon {
+    margin: 30px 0;
+}
+
+.fa-check-circle {
+    color: #28a745;
+}
+
+.fa-times-circle,
+.fa-ban {
+    color: #dc3545;
+}
+
+.mt-2 {
+    margin-top: 10px;
+}
+
+.mt-4 {
+    margin-top: 20px;
+}
+
+.mb-4 {
+    margin-bottom: 20px;
+}
+
+.transaction-details {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Informações da Transferência */
+.transfer-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.info-row {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-label {
+    color: #6c757d;
+    font-weight: 500;
+    min-width: 120px;
+}
+
+.info-value {
+    color: #212529;
+    font-weight: 600;
+}
+
+.id-code {
+    font-family: monospace;
+    font-size: 14px;
+    background-color: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.recipient-info {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.recipient-info h5 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.receipt-button {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.receipt-button .btn {
+    padding: 10px 20px;
+}
+
+.receipt-button .btn i {
+    margin-right: 8px;
+}
+
+/* Novos estilos para informações do Pix */
+.pix-info {
+    margin-bottom: 20px;
+}
+
+.pix-info h5 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.pix-key {
+    font-family: monospace;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+.divider {
+    height: 1px;
+    background-color: #dee2e6;
+    margin: 20px 0;
+}
+
+.total-value {
+    color: #28a745;
+    font-size: 1.1em;
+}
+
+.info-row .fas {
+    margin-right: 5px;
+    color: #6c757d;
+}
+
+/* Estilos para informações durante processamento */
+.processing-info {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipient-preview {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.recipient-preview h5 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.info-preview {
+    text-align: left;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.info-preview .info-row {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-preview .info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-preview .info-label {
+    color: #6c757d;
+    font-weight: 500;
+    min-width: 120px;
+}
+
+.info-preview .info-value {
+    color: #212529;
+    font-weight: 600;
+}
+
+.info-preview .pix-key {
+    font-family: monospace;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+.info-preview .total-value {
+    color: #28a745;
+}
+
+.info-preview .fas {
+    margin-right: 5px;
+    color: #6c757d;
+}
+
+/* Estilo para o alerta de transferência pendente */
+.pending-alert {
+    margin: 20px auto;
+    max-width: 400px;
+    text-align: left;
+    border-left: 5px solid #17a2b8;
+}
+
+.pending-alert i {
+    margin-right: 8px;
+}
+
+.pending-alert strong {
+    margin-right: 5px;
+}
+</style> 

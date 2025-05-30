@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Cadastro do Pagador</h3>
+            </div>
+            <div class="panel-body">
+                <form name="cadastroForm" ng-submit="submitForm()" novalidate>
+                    <!-- Nome completo -->
+                    <div class="form-group" ng-class="{'has-error': cadastroForm.nome.$invalid && cadastroForm.nome.$dirty}">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="nome" 
+                               name="nome" 
+                               ng-model="formData.nome" 
+                               required>
+                        <span class="help-block" ng-show="cadastroForm.nome.$invalid && cadastroForm.nome.$dirty">
+                            Nome é obrigatório
+                        </span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group" ng-class="{'has-error': cadastroForm.email.$invalid && cadastroForm.email.$dirty}">
+                        <label for="email">E-mail</label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="email" 
+                               name="email" 
+                               ng-model="formData.email" 
+                               required>
+                        <span class="help-block" ng-show="cadastroForm.email.$invalid && cadastroForm.email.$dirty">
+                            E-mail inválido
+                        </span>
+                    </div>
+
+                    <!-- Telefone -->
+                    <div class="form-group" ng-class="{'has-error': cadastroForm.telefone.$invalid && cadastroForm.telefone.$dirty}">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" 
+                               class="form-control" 
+                               id="telefone" 
+                               name="telefone" 
+                               ng-model="formData.telefone" 
+                               required>
+                        <span class="help-block" ng-show="cadastroForm.telefone.$invalid && cadastroForm.telefone.$dirty">
+                            Telefone é obrigatório
+                        </span>
+                    </div>
+
+                    <!-- País de Origem -->
+                    <div class="form-group" ng-class="{'has-error': cadastroForm.paisOrigem.$invalid && cadastroForm.paisOrigem.$dirty}">
+                        <label for="paisOrigem">País de Origem</label>
+                        <select class="form-control" 
+                                id="paisOrigem" 
+                                name="paisOrigem" 
+                                ng-model="formData.paisOrigem" 
+                                required>
+                            <option value="">Selecione um país</option>
+                            <option ng-repeat="pais in paises" value="{{pais}}">{{pais}}</option>
+                        </select>
+                        <span class="help-block" ng-show="cadastroForm.paisOrigem.$invalid && cadastroForm.paisOrigem.$dirty">
+                            País de origem é obrigatório
+                        </span>
+                    </div>
+
+                    <!-- Mensagem de erro geral -->
+                    <div class="alert alert-danger" ng-if="error">
+                        {{error}}
+                    </div>
+
+                    <!-- Botão de submit -->
+                    <button type="submit" 
+                            class="btn btn-primary btn-block" 
+                            ng-disabled="cadastroForm.$invalid">
+                        Continuar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

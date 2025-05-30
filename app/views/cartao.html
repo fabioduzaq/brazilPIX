@@ -1,0 +1,115 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Pagamento com Cartão</h3>
+            </div>
+            <div class="panel-body">
+                <!-- Resumo da transação -->
+                <div class="transaction-summary mb-4">
+                    <h4>Resumo da Transação</h4>
+                    
+                    <!-- Dados do Pix -->
+                    <div class="summary-item">
+                        <span>Tipo de Chave:</span>
+                        <strong>{{tipoPix | uppercase}}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Chave Pix:</span>
+                        <strong>{{chavePix}}</strong>
+                    </div>
+                    <div class="summary-item" ng-if="descricaoPix">
+                        <span>Descrição:</span>
+                        <strong>{{descricaoPix}}</strong>
+                    </div>
+
+                    
+
+                    <!-- Valores -->
+                    <div class="summary-item">
+                        <span>Valor da Transferência:</span>
+                        <strong>R$ {{valorTransferencia | number:2}}</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Taxa de Serviço (2%):</span>
+                        <strong>R$ {{taxaServico | number:2}}</strong>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total a Pagar:</span>
+                        <strong>R$ {{valorTotal | number:2}}</strong>
+                    </div>
+                </div>
+
+                <!-- Opções de Pagamento Rápido -->
+                <div class="quick-payment-info">
+                    <!-- Debug Info (remover em produção) -->
+                    <div class="debug-info" ng-if="false">
+                        UserAgent: {{navigator.userAgent}}<br>
+                        Platform: {{navigator.platform}}<br>
+                        isIOS: {{isIOS}}<br>
+                        isAndroid: {{isAndroid}}
+                    </div>
+
+                    <!-- Apple Pay -->
+                    <span class="payment-option" ng-show="isIOS">
+                        <i class="fab fa-apple pay-icon"></i> 
+                        Pague mais rápido com Apple Pay
+                    </span>
+
+                    <!-- Google Pay -->
+                    <span class="payment-option" ng-show="isAndroid">
+                        <i class="fab fa-google-pay pay-icon"></i> 
+                        Pague mais rápido com Google Pay
+                    </span>
+
+                    <!-- Fallback para outros dispositivos -->
+                    <span class="payment-option" ng-show="!isIOS && !isAndroid">
+                        <i class="fas fa-credit-card pay-icon"></i>
+                        Pague com cartão de crédito
+                    </span>
+                </div>
+
+                <!-- Formulário Stripe -->
+                <form id="payment-form" ng-submit="submitPayment($event)">
+                    <div id="payment-element">
+                        <!-- Stripe Elements será montado aqui -->
+                    </div>
+                    <hr class="my-4">
+
+                    <!-- Mensagens de erro -->
+                    <div class="alert alert-danger mt-3" ng-if="error">  
+                        <i class="fas fa-exclamation-circle"></i> {{error}}
+                        <button type="button" class="close" ng-click="limparErro()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <!-- Botão de pagamento -->
+                    <button type="submit" 
+                            class="btn btn-primary btn-block btn-lg mt-4"
+                            ng-disabled="loading || !stripeReady">
+                        <span ng-if="!loading && stripeReady">
+                            <i class="fas fa-lock"></i> Pagar R$ {{valorTotal | number:2}}
+                        </span>
+                        <span ng-if="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Processando...
+                        </span>
+                        <span ng-if="!loading && !stripeReady">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando formulário...
+                        </span>
+                    </button>
+
+                    <!-- Mensagem de segurança -->
+                    <p class="security-message text-center mt-2" ng-if="stripeReady">
+                        <i class="fas fa-shield-alt"></i>
+                        Pagamento seguro processado pela Stripe
+                    </p>
+                </form>
+
+                <!-- Botão Voltar -->
+                <button class="btn btn-link btn-block mt-3" ng-click="voltar()">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+            </div>
+        </div>
+    </div>
+</div> 

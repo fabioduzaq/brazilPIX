@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html ng-app="pixBrasilApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixBrasil - Transferências Internacionais</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- App Scripts -->
+    <script src="app/app.js"></script>
+    <script src="app/controllers/stepsController.js"></script>
+    <script src="app/controllers/pixController.js"></script>
+    <script src="app/controllers/cadastroController.js"></script>
+    <script src="app/controllers/cartaoController.js"></script>
+    <script src="app/controllers/confirmacaoController.js"></script>
+    <script src="app/controllers/statusController.js"></script>
+    <script src="app/services/pixService.js"></script>
+    <script src="app/services/stripeService.js"></script>
+    <script src="app/services/confirmacaoService.js"></script>
+    <script src="app/services/statusService.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/">
+                    <i class="fas fa-money-bill-wave logo-icon"></i>
+                    <span class="logo-text">PixBrasil</span>
+                </a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#/como-funciona"><i class="fas fa-info-circle"></i> Como Funciona</a></li>
+                    <li><a href="#/suporte"><i class="fas fa-headset"></i> Suporte</a></li>
+                    <li class="language-selector">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fas fa-globe"></i> PT-BR <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fas fa-flag-usa"></i> English</a></li>
+                            <li><a href="#"><i class="fas fa-flag"></i> Español</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Steps -->
+    <div class="progress-steps" ng-controller="StepsController">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-3" ng-class="{'active': isActive('/')}">
+                    <span class="step-number">1</span>
+                    <span class="step-text">Valor</span>
+                </div>
+                <div class="col-xs-3" ng-class="{'active': isActive('/cadastro')}">
+                    <span class="step-number">2</span>
+                    <span class="step-text">Cadastro</span>
+                </div>
+                <div class="col-xs-3" ng-class="{'active': isActive('/cartao')}">
+                    <span class="step-number">3</span>
+                    <span class="step-text">Pagamento</span>
+                </div>
+                <div class="col-xs-3" ng-class="{'active': isActive('/confirmacao')}">
+                    <span class="step-number">4</span>
+                    <span class="step-text">Confirmação</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div ng-view></div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features-section" ng-if="$location.path() === '/'">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>100% Seguro</h3>
+                        <p>Transações protegidas com criptografia de ponta a ponta</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Transferência Instantânea</h3>
+                        <p>Seu dinheiro chega em segundos com o Pix</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <h3>Melhor Taxa</h3>
+                        <p>Taxas competitivas para transferências internacionais</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>Sobre o PixBrasil</h4>
+                    <p>Facilitamos transferências internacionais para o Brasil usando o sistema Pix, de forma rápida e segura.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Links Úteis</h4>
+                    <ul class="footer-links">
+                        <li><a href="#/termos"><i class="fas fa-file-alt"></i> Termos de Uso</a></li>
+                        <li><a href="#/privacidade"><i class="fas fa-lock"></i> Política de Privacidade</a></li>
+                        <li><a href="#/faq"><i class="fas fa-question-circle"></i> Perguntas Frequentes</a></li>
+                        <li><a href="#/contato"><i class="fas fa-envelope"></i> Contato</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4>Contato</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-envelope"></i> suporte@pixbrasil.com</li>
+                        <li><i class="fas fa-phone"></i> 0800 123 4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, Brasil</li>
+                    </ul>
+                    <div class="payment-methods">
+                        <i class="fab fa-cc-visa payment-icon"></i>
+                        <i class="fab fa-cc-mastercard payment-icon"></i>
+                        <i class="fab fa-cc-amex payment-icon"></i>
+                        <i class="fas fa-qrcode payment-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 PixBrasil. Todos os direitos reservados.</p>
+                <div class="security-badges">
+                    <i class="fas fa-lock security-icon"></i>
+                    <i class="fas fa-shield-alt security-icon"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html> 

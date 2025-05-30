@@ -1,0 +1,90 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Confirmar Transação</h3>
+            </div>
+            <div class="panel-body">
+                <!-- Dados do Pix -->
+                <div class="section">
+                    <h4>Dados do Destinatário</h4>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Atenção!</strong> 
+                        Por favor, verifique cuidadosamente os dados do destinatário antes de confirmar. 
+                        Após a confirmação, a transferência Pix não poderá ser cancelada ou revertida.
+                        Certifique-se que a chave Pix está correta.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label><strong>Tipo de Chave:</strong></label>
+                                <select class="form-control" 
+                                        ng-model="dadosPix.tipo"
+                                        ng-change="onTipoChaveChange()"
+                                        ng-options="tipo.id as tipo.nome for tipo in tiposChave">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label><strong>Chave Pix:</strong></label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       ng-model="dadosPix.chave"
+                                       ng-change="formatarChave()">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label><strong>Descrição:</strong></label>
+                                <textarea class="form-control" 
+                                         ng-model="dadosPix.descricao"
+                                         rows="2"
+                                         maxlength="140"
+                                         placeholder="Descrição opcional da transferência"></textarea>
+                                <small class="text-muted">Máximo de 140 caracteres</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="valor-destaque">
+                                <label><strong>Valor:</strong></label>
+                                <div class="valor-box">
+                                    {{dadosPix.valor}}
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+
+                <!-- Mensagem de erro geral -->
+                <div class="alert alert-danger" ng-if="error">
+                    {{error}}
+                </div>
+
+                <!-- Botões -->
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button type="button" 
+                                class="btn btn-default btn-block" 
+                                ng-click="cancelar()">
+                            Cancelar
+                        </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button type="button" 
+                                class="btn btn-success btn-block" 
+                                ng-click="confirmar()">
+                            Confirmar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

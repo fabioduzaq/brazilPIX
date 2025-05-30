@@ -1,0 +1,342 @@
+/* Variáveis de cores da bandeira do Brasil */
+:root {
+    --brasil-verde: #009c3b;
+    --brasil-amarelo: #ffdf00;
+    --brasil-azul: #002776;
+    --brasil-verde-claro: #2fb344;
+    --brasil-amarelo-claro: #fff5cc;
+}
+
+/* Layout geral */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--brasil-amarelo-claro);
+}
+.panel-title{
+    padding: 10px;
+}
+
+/* Header */
+.main-header {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar {
+    background-color: var(--brasil-verde) !important;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--brasil-amarelo) !important;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+    color: var(--brasil-amarelo);
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem !important;
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: var(--brasil-amarelo) !important;
+}
+
+.nav-link i {
+    margin-right: 5px;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 40px  ;
+}
+
+/* Centralização do conteúdo */
+[ng-view] {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 400px);
+}
+
+[ng-view] > .row {
+    width: 100%;
+    margin: 0;
+}
+
+/* Footer */
+.main-footer {
+    margin-top: auto;
+}
+
+.footer-top {
+    background-color: white;
+    border-top: 1px solid #dee2e6;
+}
+
+.footer-top h5 {
+    color: var(--brasil-verde);
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+}
+
+.footer-top ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-top ul li a {
+    color: var(--brasil-azul);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-top ul li a:hover {
+    color: var(--brasil-verde);
+}
+
+.footer-top ul li i {
+    width: 20px;
+    color: var(--brasil-verde);
+    margin-right: 8px;
+}
+
+.footer-bottom {
+    background-color: var(--brasil-verde) !important;
+}
+
+.social-links a {
+    font-size: 1.2rem;
+    transition: opacity 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--brasil-amarelo) !important;
+    opacity: 0.8;
+}
+
+/* Estilo do painel */
+.panel {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: none;
+}
+
+.panel-primary > .panel-heading {
+    background-color: var(--brasil-verde);
+    color: white;
+    border: none;
+}
+
+.panel-body {
+    padding: 20px;
+}
+
+/* Espaçamento dos formulários */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Estilo dos botões */
+.btn-primary {
+    background-color: var(--brasil-verde);
+    border-color: var(--brasil-verde);
+    margin-top: 20px;
+}
+
+.btn-primary:hover {
+    background-color: var(--brasil-verde-claro);
+    border-color: var(--brasil-verde-claro);
+}
+
+/* Mensagens de erro */
+.help-block {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #dc3545;
+}
+
+.alert {
+    margin-top: 20px;
+}
+
+/* Estilos da página Como Funciona */
+.section-title {
+    color: var(--brasil-verde);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.section-title i {
+    margin-right: 10px;
+}
+
+/* Estilos dos passos */
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background-color: var(--brasil-verde);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-content h5 {
+    color: var(--brasil-verde);
+    margin-bottom: 0.5rem;
+}
+
+/* Estilos dos cards de benefícios */
+.benefit-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+}
+
+.benefit-card i {
+    font-size: 2rem;
+    color: var(--brasil-verde);
+    margin-bottom: 1rem;
+}
+
+.benefit-card h5 {
+    color: var(--brasil-verde);
+    margin-bottom: 1rem;
+}
+
+/* Estilos dos cards de informação */
+.info-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.info-card h5 {
+    color: var(--brasil-verde);
+    margin-bottom: 1rem;
+}
+
+.info-card ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.info-card ul li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.info-card ul li:before {
+    content: "•";
+    color: var(--brasil-verde);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* Call to Action */
+.btn-primary.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.btn-primary.btn-lg i {
+    margin-right: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 20px 0;
+    }
+
+    .col-md-6.col-md-offset-3 {
+        padding: 0 15px;
+    }
+
+    .panel {
+        margin: 0;
+    }
+
+    .footer-top {
+        text-align: center;
+    }
+
+    .footer-bottom {
+        text-align: center;
+    }
+
+    .social-links {
+        margin-top: 1rem;
+    }
+
+    .step-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .benefit-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Ajustes para telas pequenas */
+@media (max-width: 480px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .panel-body {
+        padding: 15px;
+    }
+
+    .footer-top {
+        padding: 30px 0;
+    }
+} 
